@@ -11,7 +11,7 @@ from homeassistant.const import CONF_SCAN_INTERVAL
 from .const import DOMAIN
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-DOMAIN = "Polis_handelser"
+DOMAIN = "polishandelser"
 
 CONFIG_SCHEMA = vol.Schema(
     {

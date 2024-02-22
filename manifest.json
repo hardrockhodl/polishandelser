@@ -1,5 +1,5 @@
 {
-    "domain": "Polis_handelser",
+    "domain": "polishandelser",
     "name": "Polis Händelser",
     "codeowners": ["@hardrockhodl"],
     "dependencies": [],
