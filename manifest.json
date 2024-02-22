@@ -1,10 +1,10 @@
 {
     "domain": "polishandelser",
-    "name": "PolisHandelser",
+    "name": "Polis Händelser",
     "codeowners": ["@hardrockhodl"],
     "dependencies": [],
-    "documentation": "SOON TO COME",
-    "iot_class": "cloud_polling",
+    "documentation": "https://github.com/hardrockhodl/Polis_handelser/blob/main/README.md",
+    "iot_class": "api_polling",
     "requirements": [""],
     "version": "0.1"
   }

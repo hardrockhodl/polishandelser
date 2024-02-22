@@ -10,11 +10,13 @@ from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.const import CONF_SCAN_INTERVAL
 from .const import DOMAIN
 
+DOMAIN = "polishandelser"
+
 CONFIG_SCHEMA = vol.Schema(
     {
         DOMAIN: vol.Schema(
             {
-                vol.Optional("ort", default="Åre"): cv.string,
+                vol.Optional("ort", default="Stockholm"): cv.string,
                 vol.Optional("antal_events", default=5): cv.positive_int,
                 vol.Optional(CONF_SCAN_INTERVAL, default=3600): cv.positive_int,
             }
@@ -28,6 +30,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
     conf = config[DOMAIN]
     ort = conf["ort"]
     antal_events = conf["antal_events"]
+    #The Swedish Police API can ban your IP if you poll more then every 10 seconds.
     scan_interval = conf[CONF_SCAN_INTERVAL]
 
     hass.data[DOMAIN] = {
@@ -45,7 +48,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
     return True
 
-async def fetch_police_events(hass, location='Åre', events_limit=5):
+async def fetch_police_events(hass, location='Stockholm', events_limit=5):
     url = f"https://polisen.se/api/events?locationname={location}"
     session = async_get_clientsession(hass)
     try:
@@ -60,4 +63,12 @@ async def fetch_police_events(hass, location='Åre', events_limit=5):
         logging.error(f"Error fetching data from Polisen API: {e}")
         return []
 
+async def update_events(hass, ort, antal_events):
+    """Hämta uppdateringar från Polisens API och uppdatera Home Assistant-entiteter."""
+    events = await fetch_police_events(hass, ort, antal_events)
+    if events:
+        # Här kan du uppdatera dina Home Assistant-entiteter med den nya datan.
+        pass
+    else:
+        logging.info("Inga händelser att visa.")
 
