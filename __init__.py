@@ -11,7 +11,7 @@ from homeassistant.const import CONF_SCAN_INTERVAL
 from .const import DOMAIN
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-DOMAIN = "polishandelser"
+DOMAIN = "Polis_handelser"
 
 CONFIG_SCHEMA = vol.Schema(
     {
@@ -51,7 +51,7 @@ async def async_setup(hass: HomeAssistant, config: dict):
 
     # Starta första uppdateringen manuellt
     await coordinator.async_refresh()
-    
+
     hass.data[DOMAIN] = {
         "ort": ort,
         "antal_events": antal_events,
