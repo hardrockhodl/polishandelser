@@ -1,38 +1,40 @@
-from homeassistant.helpers.entity import Entity
+from homeassistant.helpers.update_coordinator import CoordinatorEntity
 from .const import DOMAIN
 
-async def async_setup_platform(hass, config, async_add_entities, discovery_info=None):
-    """Set up the sensor platform."""
-    # Använd `hass.data[DOMAIN]` för att komma åt konfigurationsdata
-    ort = hass.data[DOMAIN]["ort"]
-    antal_events = hass.data[DOMAIN]["antal_events"]
+# Anpassa denna funktion för att passa din komponents konfigurationsmekanism
+async def async_setup_entry(hass, config_entry, async_add_entities):
+    """Set up PolisenEventSensor based on a config entry."""
+    coordinator = hass.data[DOMAIN][config_entry.entry_id]['coordinator']
 
-    # Skapa och lägg till dina sensorer. Exempel:
-    async_add_entities([PolisenEventSensor(ort, antal_events)], True)
+    # Skapa en sensor för varje händelse i koordinatorns data
+    # Antag att koordinatorns data är en lista med händelser
+    async_add_entities(
+        PolisenEventSensor(coordinator, idx) for idx, _ in enumerate(coordinator.data)
+    )
 
-class PolisenEventSensor(Entity):
-    """Exempelsensor för Polisens händelser."""
+class PolisenEventSensor(CoordinatorEntity):
+    """En sensor som visar information om en händelse från Polisen."""
 
-    def __init__(self, ort, antal_events):
-        """Initialize the sensor."""
-        self._ort = ort
-        self._antal_events = antal_events
-        self._state = None
-
-    @property
-    def name(self):
-        """Return the name of the sensor."""
-        return "Polisen Events"
+    def __init__(self, coordinator, idx):
+        """Initiera sensorn."""
+        super().__init__(coordinator)
+        self.idx = idx
+        self._attr_name = f"Polisen Event {idx}"
+        self._attr_unique_id = f"polisen_event_{idx}"
 
     @property
     def state(self):
-        """Return the state of the sensor."""
-        return self._state
+        """Returnera tillståndet för sensorn. Används för att visa i UI."""
+        event = self.coordinator.data[self.idx]
+        return event.get('name', 'Okänd händelse')
 
-    async def async_update(self):
-        """Fetch new state data for the sensor."""
-        # Här skulle du hämta ny data baserat på `self._ort` och `self._antal_events`
-        # och uppdatera `self._state` med den nya informationen.
-        pass
+    @property
+    def extra_state_attributes(self):
+        """Returnera ytterligare attribut för sensorn."""
+        event = self.coordinator.data[self.idx]
+        return {
+            "summary": event.get('summary', 'Ingen sammanfattning tillgänglig'),
+            # Lägg till fler attribut här om så önskas
+        }
 
        

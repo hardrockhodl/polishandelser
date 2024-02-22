@@ -9,6 +9,7 @@ from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers.event import async_track_time_interval
 from homeassistant.const import CONF_SCAN_INTERVAL
 from .const import DOMAIN
+from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
 DOMAIN = "polishandelser"
 
@@ -32,7 +33,25 @@ async def async_setup(hass: HomeAssistant, config: dict):
     antal_events = conf["antal_events"]
     #The Swedish Police API can ban your IP if you poll more then every 10 seconds.
     scan_interval = conf[CONF_SCAN_INTERVAL]
+    async def async_retrieve_events():
+        """Hämta händelser från Polisens API."""
+        try:
+            events = await fetch_police_events(hass, ort, antal_events)
+            return events
+        except Exception as e:
+            raise UpdateFailed(f"Error fetching events: {e}")
 
+    coordinator = DataUpdateCoordinator(
+        hass,
+        logging.getLogger(__name__),
+        name="polis_händelser",
+        update_method=async_retrieve_events,
+        update_interval=timedelta(seconds=scan_interval),
+    )
+
+    # Starta första uppdateringen manuellt
+    await coordinator.async_refresh()
+    
     hass.data[DOMAIN] = {
         "ort": ort,
         "antal_events": antal_events,
