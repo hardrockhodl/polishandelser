@@ -1,0 +1,10 @@
+{
+    "domain": "polishandelser",
+    "name": "PolisHandelser",
+    "codeowners": ["@hardrockhodl"],
+    "dependencies": [],
+    "documentation": "SOON TO COME",
+    "iot_class": "cloud_polling",
+    "requirements": [""],
+    "version": "0.1"
+  }
