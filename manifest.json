@@ -3,7 +3,7 @@
     "name": "Polis Händelser",
     "codeowners": ["@hardrockhodl"],
     "dependencies": [],
-    "documentation": "https://github.com/hardrockhodl/Polis_handelser/blob/main/README.md",
+    "documentation": "https://github.com/hardrockhodl/polishandelser/blob/main/README.md",
     "iot_class": "cloud_polling",
     "requirements": [""],
     "version": "0.1.0"
